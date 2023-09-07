@@ -2,10 +2,9 @@
 {% load static %}
 <!--{% load my_tags %}-->
 {% block content %}
-<div class="col-9">
-    <div class="row text-center">
-
-        <table class="table table-striped">
+<div class="col-8">
+    <div class="row-8">
+        <table class="table table-striped m-2">
             <thead>
             <tr class="table-primary">
                 <th scope="col">ФИО</th>
@@ -27,8 +26,10 @@
             {% endfor %}
             </tbody>
         </table>
-        <div class="container-fluid m-3">
-            <div class="pagination">
+    </div>
+
+    <div class="container-fluid m-2">
+        <div class="pagination">
             <span class="step-links">
                 {% if page_obj.has_previous %}
                     <a href="?page=1">&laquo; Первая</a>
@@ -44,12 +45,9 @@
                     <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
                 {% endif %}
             </span>
-            </div>
         </div>
     </div>
-</div>
-<div class="col-1">
-    Одна из трех колонок
+
 </div>
 
 

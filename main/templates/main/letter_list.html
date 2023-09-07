@@ -1,10 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/base.html' %}
+{% load static %}
+<!--{% load my_tags %}-->
+{% block content %}
+<div class="col-8">
+    <div class="row-8">
+        <table class="table table-striped m-2">
+            <thead>
+            <tr class="table-primary">
+                <th scope="col">Тема письма</th>
+                <th scope="col">Содержание</th>
+                <th scope="col">Подробно</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in page_obj %}
+            <tr>
+                <td class="table-secondary" align="left">{{ object.title }}</td>
+                <td class="table-secondary" align="center">{{ object.body }}</td>
+                <td class="table-secondary" align="center">
+                    <a type="button" class="btn btn-link" {# href="{% url 'main:letter_detail/' object.pk %}" #}>
+                        ✉️
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-</body>
-</html>
+    <div class="container-fluid m-2">
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; Первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

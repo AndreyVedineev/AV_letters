@@ -17,6 +17,39 @@ class Client(models.Model):
         return f'{self.email} - {self.full_name}'
 
 
+class Letter(models.Model):
+    title = models.CharField(max_length=150, verbose_name='Заголовок')
+    body = models.TextField(**NULLABLE, verbose_name='Содержание')
+
+    class Meta:
+        verbose_name = 'Письмо'  # Настройка для наименования одного объекта
+        verbose_name_plural = 'Письма'  # Настройка для наименования набора объектов
+        ordering = ['title']
+
+    def __str__(self):
+        return f'{self.title} - {self.body}'
+
+
+class MailingLog(models.Model):
+    STATUS_OK = 'ok'
+    STATUS_FAILED = 'failed'
+
+    STATUSES = [(STATUS_OK, 'Успешно'),
+                (STATUS_FAILED, 'Ошибка')]
+
+    status = models.CharField(max_length=20, choices=STATUSES, **NULLABLE, verbose_name='Статус доставки рассылки')
+    datatime_last = models.DateTimeField(auto_now=False,
+                                         auto_now_add=False, **NULLABLE,
+                                         verbose_name='Дата и время последней попытки')
+
+    class Meta:
+        verbose_name = 'Лог'  # Настройка для наименования одного объекта
+        verbose_name_plural = 'Логи'  # Настройка для наименования набора объектов
+
+    def __str__(self):
+        return f'{self.status} - {self.datatime_last}'
+
+
 class Mailing(models.Model):
     PERIOD_DAILY = 'daily'
     PERIOD_WEEKLY = 'weekly'
@@ -35,53 +68,22 @@ class Mailing(models.Model):
                 (STATUS_DONE, 'Завершена')]
 
     period = models.CharField(max_length=20, choices=PERIODS, verbose_name='Период жизни рассылки')
-    status = models.CharField(max_length=20, choices=STATUSES, verbose_name='Статус рассылки')
+    status = models.CharField(max_length=20, choices=STATUSES, **NULLABLE, verbose_name='Статус рассылки')
+    letter = models.OneToOneField(Letter, on_delete=models.CASCADE, verbose_name='Письмо, к рассылке')
     datatime_create = models.DateTimeField(auto_now=False, auto_now_add=False,
                                            verbose_name='Дата и время создание рассылки')
+    client = models.ManyToManyField(Client, verbose_name='Клиент(ы), которому(-ым) отправлялось письмо')
+    mailing_log = models.OneToOneField(MailingLog, on_delete=models.CASCADE, verbose_name='Лог рассылки')
 
     class Meta:
         verbose_name = 'Рассылка'  # Настройка для наименования одного объекта
-        verbose_name_plural = 'КРассылки'  # Настройка для наименования набора объектов
+        verbose_name_plural = 'Рассылки'  # Настройка для наименования набора объектов
         ordering = ['datatime_create']
-
-    def __str__(self):
-        return f'{self.period} - {self.status} - {self.datatime_create}'
-
-
-class MailingLog(models.Model):
-    STATUS_OK = 'ok'
-    STATUS_FAILED = 'failed'
-
-    STATUSES = [(STATUS_OK, 'Успешно'),
-                (STATUS_FAILED, 'Ошибка')]
-
-    status = models.CharField(max_length=20, choices=STATUSES, **NULLABLE, verbose_name='Статус доставки рассылки')
-    datatime_last = models.DateTimeField(auto_now=False,
-                                         auto_now_add=False, **NULLABLE,
-                                         verbose_name='Дата и время последней попытки')
-    client = models.ManyToManyField(Client, verbose_name='Клиент(ы), которому(-ым) отправлялось письмо')
-    mailing = models.ForeignKey(Mailing, on_delete=models.CASCADE, verbose_name='Рассылка, которая отправлялась')
 
     class Meta:
         verbose_name = 'Логика'  # Настройка для наименования одного объекта
         verbose_name_plural = 'Логика'  # Настройка для наименования набора объектов
-        ordering = ['datatime_last']
+        ordering = ['datatime_create']
 
     def __str__(self):
-        return f'{self.status} - {self.datatime_last} - {self.client} - {self.client}'
-
-
-class Letter(models.Model):
-    title = models.CharField(max_length=150, verbose_name='Заголовок')
-    body = models.TextField(**NULLABLE, verbose_name='Содержание')
-    mailinglog = models.OneToOneField(MailingLog, on_delete=models.CASCADE, related_name="mailinglog_of",
-                                      verbose_name='Лог рассылки')
-
-    class Meta:
-        verbose_name = 'Письмо'  # Настройка для наименования одного объекта
-        verbose_name_plural = 'Письма'  # Настройка для наименования набора объектов
-        ordering = ['title']
-
-
-def __str__(self):
-    return f'{self.title} - {self.body} - {self.mailinglog}'
+        return f'{self.period} - {self.status} - {self.letter} - {self.datatime_create} - {self.client} - {self.mailing_log}'
