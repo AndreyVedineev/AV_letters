@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% load static %}
+<!--{% load my_tags %}-->
+{% block content %}
+<div class="col-9">
+    <div class="row text-center">
+
+        <table class="table table-striped">
+            <thead>
+            <tr class="table-primary">
+                <th scope="col">ФИО</th>
+                <th scope="col">Email</th>
+                <th scope="col">Подробно</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in page_obj %}
+            <tr>
+                <td class="table-secondary" align="left">{{ object.full_name }}</td>
+                <td class="table-secondary" align="center">{{ object.email }}</td>
+                <td class="table-secondary" align="center">
+                    <a type="button" class="btn btn-link" href="{% url 'main:client_detail/' object.pk %}">
+                        👦
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="container-fluid m-3">
+            <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; Первая</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-1">
+    Одна из трех колонок
+</div>
+
+
+{% endblock %}
