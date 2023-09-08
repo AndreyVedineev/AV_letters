@@ -81,8 +81,8 @@ class Mailing(models.Model):
         ordering = ['datatime_create']
 
     class Meta:
-        verbose_name = 'Логика'  # Настройка для наименования одного объекта
-        verbose_name_plural = 'Логика'  # Настройка для наименования набора объектов
+        verbose_name = 'Рассылка'  # Настройка для наименования одного объекта
+        verbose_name_plural = 'Рассылки'  # Настройка для наименования набора объектов
         ordering = ['datatime_create']
 
     def __str__(self):

@@ -1,0 +1,22 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load my_tags %}
+{% block content %}
+<div class="col-10">
+
+    <div class="card m-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ object.title }}</h5>
+            <p class="card-text">{{ object.body }}</p>
+            <hr>
+
+            <footer class="mt-2">
+                <a class="card-link btn btn-outline-primary"
+                   href="{% url 'main:letter_update/' object.pk %}">Изменить</a>
+                <a class="card-link btn btn-outline-danger" href="{% url 'main:letter_delete/' object.pk %}">Удалить</a>
+            </footer>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
